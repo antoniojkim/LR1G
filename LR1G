@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+
+import argparse
+import shutil
+
+from Scripts.parseLR1 import parseLR1
+from Scripts.generateScanner import *
+from Scripts.generateCG import *
+from Scripts.generateSA import *
+from Scripts.generateMarkdown import generateMarkdown
+
+def LR1G(args):
+    languageSpecification = args.file
+
+    if args.lr1:
+        lr1_file = languageSpecification.replace(".yml", ".lr1")
+        if lr1_file == languageSpecification:
+            lr1_file += ".lr1"
+
+        parseLR1(languageSpecification, lr1_file)
+
+    if args.scanner:
+        if args.lang == "C++":
+            generateScannerCPlusPlus(languageSpecification)
+
+    relpath = os.path.dirname(os.path.abspath(__file__))
+    if args.parser:
+
+        if args.lang == "C++":
+            if not os.path.isdir("Parser"):
+                os.mkdir("Parser")
+
+            for file in ("parser.h", "parser.cc", "parsetree.h", "parsetree.cc", "StringUtils.h"):
+                shutil.copyfile(os.path.join(relpath, "Scripts", "Templates", "C++", file), 
+                                os.path.join("Parser", file))
+
+    if args.context_sensitive_trees:
+        relpath = os.path.dirname(os.path.abspath(__file__))
+
+        if args.lang == "C++":
+            if not os.path.isdir("ContextSensitiveTrees"):
+                os.mkdir("ContextSensitiveTrees")
+
+            for file in ("ContextSensitiveTrees.h", "ContextSensitiveTrees.cc"):
+                shutil.copyfile(os.path.join(relpath, "Scripts", "Templates", "C++", file), 
+                                os.path.join("ContextSensitiveTrees", file))
+
+    if args.code_generator:
+        if args.lang == "C++":
+            generateCG_CPlusPlus(languageSpecification)
+
+    if args.context_sensitive_trees:
+        if args.lang == "C++":
+            generateSA_CPlusPlus(languageSpecification)
+
+    if args.markdown:
+        generateMarkdown(languageSpecification)
+
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description='Generate LR1 scanner and parser.')
+    parser.add_argument('-lang', '--lang', action='store', default="C++",
+                        help='Choose the language to output to (Supported: C++).')
+    parser.add_argument('-l', '--l', '-L', '--L', action='store_false', dest='lr1',
+                        help='If flag raised, does NOT generate LR1 specification')
+    parser.add_argument('-s', '--s', '-S', '--S', action='store_false', dest='scanner',
+                        help='If flag raised, does NOT generate scanner')
+    parser.add_argument('-p', '--p', '-P', '--P', action='store_false', dest='parser',
+                        help='If flag raised, does NOT generate parser')
+    parser.add_argument('-c', '--c', '-C', '--C', action='store_true', dest='code_generator',
+                        help='If flag raised, generates code generator')
+    parser.add_argument('-a', '--a', '-A', '--A', action='store_true', dest='semantic_analyser',
+                        help='If flag raised, generates semantic analyser')
+    parser.add_argument('-t', '--t', '-T', '--T', action='store_true', dest='context_sensitive_trees',
+                        help='If flag raised, generates context sensitive trees')
+    parser.add_argument('-m', '--m', '-M', '--M', action='store_true', dest='markdown',
+                        help='If flag raised, generated markdown file containing language specifications')
+    parser.add_argument('file', action='store', nargs='?', default="LanguageSpecification.yml",
+                        help='Specification of language in yml format')
+
+    args = parser.parse_args()
+    LR1G(args)
+
+
+
+
+
