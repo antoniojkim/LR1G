@@ -55,8 +55,8 @@ def generateParserFromLR1_CPlusPlus(lr1_file, verbose=False):
     with open(os.path.join(relpath, "fullparser.cc")) as file:
         template = os.linesep.join(row.rstrip() for row in file)
 
-    template = template.replace("{terminals}", ",\n\t".join(terminals))
-    template = template.replace("{nonterminals}", ",\n\t".join(nonterminals))
+    template = template.replace("{terminals}", ",\n\t".join('"%s"' % t for t in terminals))
+    template = template.replace("{nonterminals}", ",\n\t".join('"%s"' % t for t in nonterminals))
     template = template.replace("{rules}", ",\n\t".join(
         map(lambda rule: "{%s}" % ", ".join('"%s"' % r for r in rule), rules)
     ))
