@@ -68,7 +68,7 @@ bool scan(const std::string& str, std::list<Token>& tokens) {
     }
     if (std::regex_search(str, match, num_regex)){
         int longest_at = 0;
-        for(int i = 1; i < match.size(); ++i){
+        for(unsigned int i = 1; i < match.size(); ++i){
             if (match[i].length() > match[longest_at].length()){
                 longest_at = i;
             }
@@ -78,7 +78,7 @@ bool scan(const std::string& str, std::list<Token>& tokens) {
     }
     if (std::regex_search(str, match, id_regex)){
         int longest_at = 0;
-        for(int i = 1; i < match.size(); ++i){
+        for(unsigned int i = 1; i < match.size(); ++i){
             if (match[i].length() > match[longest_at].length()){
                 longest_at = i;
             }
@@ -88,7 +88,7 @@ bool scan(const std::string& str, std::list<Token>& tokens) {
     }
     if (std::regex_search(str, match, token_regex)){
         int longest_at = 0;
-        for(int i = 1; i < match.size(); ++i){
+        for(unsigned int i = 1; i < match.size(); ++i){
             if (match[i].length() > match[longest_at].length()){
                 longest_at = i;
             }
