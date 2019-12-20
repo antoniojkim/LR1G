@@ -6,6 +6,7 @@ try:
 except ImportError:
     from yaml import Loader, Dumper
 
+special_characters = set(("^", "$", ".", "|", "?", "*", "+", "(", ")", "[", "]", "{", "}"))
 
 def generateScannerCPlusPlus(infile, verbose=False):
     relpath = os.path.dirname(os.path.abspath(__file__))
@@ -39,10 +40,10 @@ def generateScannerCPlusPlus(infile, verbose=False):
         template = os.linesep.join(row.rstrip() for row in file)
 
     keywordType = {keyword[key]['lexeme']: key for keyword in specs["keywords"] for key in keyword}
-    template = template.replace(
-        "{keywordTypes}",
-        ",\n\t".join(["{{\"{k}\", {v}}}".format(k=k, v=v) for k, v in keywordType.items()])
-    )
+    # template = template.replace(
+    #     "{keywordTypes}",
+    #     ",\n\t".join(["{{\"{k}\", {v}}}".format(k=k, v=v) for k, v in keywordType.items()])
+    # )
 
     keywordLexeme = {v:k for k, v in keywordType.items()}
     template = template.replace(
@@ -62,25 +63,49 @@ def generateScannerCPlusPlus(infile, verbose=False):
         ",\n\t".join(["{{{k}, \"{k}\"}}".format(k=k, v=v) for k, v in typeLexeme.items()])
     )
 
-    charType = {k.replace("'", "\\'"):v for k, v in tokenType.items() if len(k) == 1 or k == "\\\""}
-    template = template.replace(
-        "{charTypes}",
-        ",\n\t".join(["{{'{k}', {v}}}".format(k=k, v=v) for k, v in charType.items()])
-    )
+    # charType = {k.replace("'", "\\'"):v for k, v in tokenType.items() if len(k) == 1 or k == "\\\""}
+    # template = template.replace(
+    #     "{charTypes}",
+    #     ",\n\t".join(["{{'{k}', {v}}}".format(k=k, v=v) for k, v in charType.items()])
+    # )
 
-    template = template.replace(
-        "{current_transitions}",
-        "".join("""
-        }} else if (current == {current} && type == {type}) {{ /*  {k}  */
-            current = {new_current};""".format(
-            current=tokenType[k[:-1]],
-            type=tokenType[k[-1:]],
-            k=k,
-            new_current=tokenType[k]
-        )
-        for k, v in tokenType.items()
-        if len(k) in (2, 3) and k[:-1] in tokenType and k[-1:] in tokenType)
-    )
+    # template = template.replace(
+    #     "{current_transitions}",
+    #     "".join("""
+    #     }} else if (current == {current} && type == {type}) {{ /*  {k}  */
+    #         current = {new_current};""".format(
+    #         current=tokenType[k[:-1]],
+    #         type=tokenType[k[-1:]],
+    #         k=k,
+    #         new_current=tokenType[k]
+    #     )
+    #     for k, v in tokenType.items()
+    #     if len(k) in (2, 3) and k[:-1] in tokenType and k[-1:] in tokenType)
+    # )
+
+    num_regex = specs.get("num_regex", "\\d*\\.?\\d+").replace("\\", "\\\\")
+    if not num_regex.startswith("^"):
+        num_regex = "^(" + num_regex + ")"
+
+    template = template.replace("{num_regex}", num_regex)
+
+    id_regex = specs.get("id_regex", "[a-zA-Z]+[0-9a-zA-Z]*")
+    if isinstance(id_regex, list):
+        id_regex = "|".join(map(str, id_regex))
+
+    if not id_regex.startswith("^"):
+        id_regex = "^(" + id_regex + ")"
+
+    template = template.replace("{id_regex}", id_regex)
+
+    token_regex = "^" + "|".join(map(
+        lambda token: "".join("\\%s" % c if c in special_characters else c for c in list(token)),
+        tokenType.keys()
+    )).replace("\\", "\\\\").replace("\"", "\\\"")
+    template = template.replace("{token_regex}", token_regex)
+
+    
+
 
     with open(os.path.join("Scanner", "scanner.cc"), "w") as file:
         file.write(template)
