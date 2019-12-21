@@ -24,6 +24,7 @@ unordered_map<Type, string> typeLexeme = {
 // };
 
 std::regex whitespace_regex("^\\s+");
+std::regex hex_regex("^(0x[0-9a-fA-f]+))");
 std::regex num_regex("{num_regex}");
 std::regex id_regex("{id_regex}");
 std::regex token_regex("{token_regex}");
@@ -66,39 +67,24 @@ bool scan(const std::string& str, std::list<Token>& tokens) {
     if (std::regex_search(str, match, whitespace_regex)){
         return scan(match.suffix(), tokens);
     }
+    if (std::regex_search(str, match, hex_regex)){
+        tokens.emplace_back(Token{match[0], NUM});
+        return scan(match.suffix(), tokens);
+    }
     if (std::regex_search(str, match, num_regex)){
-        int longest_at = 0;
-        for(unsigned int i = 1; i < match.size(); ++i){
-            if (match[i].length() > match[longest_at].length()){
-                longest_at = i;
-            }
-        }
-        tokens.emplace_back(Token{match[longest_at], NUM});
+        tokens.emplace_back(Token{match[0], NUM});
         return scan(match.suffix(), tokens);
     }
     if (std::regex_search(str, match, id_regex)){
-        int longest_at = 0;
-        for(unsigned int i = 1; i < match.size(); ++i){
-            if (match[i].length() > match[longest_at].length()){
-                longest_at = i;
-            }
-        }
-        tokens.emplace_back(Token{match[longest_at], ID});
+        tokens.emplace_back(Token{match[0], ID});
         return scan(match.suffix(), tokens);
     }
     if (std::regex_search(str, match, token_regex)){
-        int longest_at = 0;
-        for(unsigned int i = 1; i < match.size(); ++i){
-            if (match[i].length() > match[longest_at].length()){
-                longest_at = i;
-            }
-        }
-        tokens.emplace_back(Token{match[longest_at], tokenType[match[longest_at]]});
+        tokens.emplace_back(Token{match[0], tokenType[match[0]]});
         return scan(match.suffix(), tokens);
     }
     return false;
 }
-
 
 
 ostream& print(ostream& out, list<Token> tokens, const string& delimiter, const bool& printType) {
