@@ -91,6 +91,7 @@ def generateScannerCPlusPlus(infile, verbose=False):
 
     id_regex = specs.get("id_regex", "[a-zA-Z]+[0-9a-zA-Z]*")
     if isinstance(id_regex, list):
+        id_regex.sort(key=len)
         id_regex = "|".join(map(str, id_regex))
 
     if not id_regex.startswith("^"):
@@ -100,7 +101,7 @@ def generateScannerCPlusPlus(infile, verbose=False):
 
     token_regex = "^" + "|".join(map(
         lambda token: "".join("\\%s" % c if c in special_characters else c for c in list(token)),
-        tokenType.keys()
+        sorted(tokenType.keys(), key=len)
     )).replace("\\", "\\\\").replace("\"", "\\\"")
     template = template.replace("{token_regex}", token_regex)
 
