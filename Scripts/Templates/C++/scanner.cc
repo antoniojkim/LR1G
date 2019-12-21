@@ -24,7 +24,7 @@ unordered_map<Type, string> typeLexeme = {
 // };
 
 std::regex whitespace_regex("^\\s+");
-std::regex hex_regex("^(0x[0-9a-fA-f]+))");
+std::regex hex_regex("^(0x[0-9a-fA-f]+)");
 std::regex num_regex("{num_regex}");
 std::regex id_regex("{id_regex}");
 std::regex token_regex("{token_regex}");
