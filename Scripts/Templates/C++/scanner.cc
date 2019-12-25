@@ -102,4 +102,21 @@ ostream& print(ostream& out, list<Token> tokens, const string& delimiter, const 
     }
     return out;
 }
+
+string join(list<Token> tokens, const string& delimiter, const bool& printType) {
+    ostringstream out;
+    bool first = true;
+    for (auto& token : tokens) {
+        if (first) {
+            first = false;
+        } else {
+            out << delimiter;
+        }
+        if (printType){
+            out << "  " << getTypeString(token.type);
+        }
+        out << token.lexeme;
+    }
+    return out.str();
+}
     
