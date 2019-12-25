@@ -6,7 +6,8 @@
 #include <unordered_set>
 
 using namespace std;
-    
+using namespace Scanner;
+
 // unordered_map<string, Type> keywordType = {
 // 	{keywordTypes}
 // };
