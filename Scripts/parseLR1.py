@@ -136,6 +136,7 @@ def parseLR1(infile, outfile, verbose=False):
         return result
 
     # Compute Follow Table
+    # print("Computing Follow Table:")
     changed = True
     while(changed):
         changed = False
@@ -143,6 +144,10 @@ def parseLR1(infile, outfile, verbose=False):
             for j in range(1, len(rule)):
                 if rule[j] in nonterminals:
                     firstS = first_star(rule, j+1)
+                    if rule[j] == "idfactor":
+                        print(f"    {rule[0]} follow: ", get_follow(rule[0]))
+                        print(f"    {rule[j]} follow: ", get_follow(rule[j]))
+                        print("    firstS: ", firstS)
                     changed = changed or union(get_follow(rule[j]), firstS)
                     if all(is_nullable(rule[k]) for k in range(j+1, len(rule))):
                         changed = changed or union(get_follow(rule[j]), get_follow(rule[0]))
@@ -220,11 +225,13 @@ def parseLR1(infile, outfile, verbose=False):
 
                 def add_transition(new_item, next_item):
                     if next_item in self.transitions:
-                        self.transitions[next_item].add_item(new_item)
+                        if hash(new_item) not in State.state_map:
+                            self.transitions[next_item].add_item(new_item)
                     else:
                         hashed = hash(new_item)
                         if hashed in State.state_map:
                             self.transitions[next_item] = State.state_map[hashed]
+
                         else:
                             self.transitions[next_item] = State(new_item)
                             State.state_map[hashed] = self.transitions[next_item]
@@ -236,7 +243,7 @@ def parseLR1(infile, outfile, verbose=False):
                         add_transition(new_item, item.get_next())
                     # else:
                     #     for next_item in get_follow(item.get_rule()[0]):
-                    #         add_transition(next_item)
+                    #         add_transition(new_item, next_item)
 
                 for transition, state in self.transitions.items():
                     state.generate_states()
@@ -245,9 +252,11 @@ def parseLR1(infile, outfile, verbose=False):
             transitions = []
             if not self.visited:
                 self.visited = True
+
                 for transition, state in self.transitions.items():
                     transitions.append([self.num, transition, "SHIFT", state.num])
                     transitions.extend(state.get_transitions())
+
                 for item in self.items:
                     if item.bookmark >= len(item.get_rule()):
                         for s in get_follow(item.get_rule()[0]):
@@ -262,7 +271,7 @@ def parseLR1(infile, outfile, verbose=False):
                 print("\n    ".join(list(map(str, self.items))))
                 print("    Transitions: "+", ".join(f"{t}->{s.num}" for t, s in self.transitions.items()))
 
-                for transition, state in self.transitions.items():
+                for transition, state in sorted(self.transitions.items(), key=lambda a: a[1].num):
                     state.print()
 
 
@@ -299,4 +308,4 @@ def parseLR1(infile, outfile, verbose=False):
 
 
 if __name__ == "__main__":
-    parseLR1("../LanguageSpecification.yml", "../LanguageSpecification.lr1")
+    parseLR1("./LanguageSpecification.yml", "./LanguageSpecification.lr1", verbose=True)
