@@ -52,7 +52,7 @@ def generateParserFromLR1_CPlusPlus(lr1_file, verbose=False):
         transitions[state][symbol] = (action == "REDUCE", nextStateOrRule)
 
 
-    with open(os.path.join(relpath, "fullparser.cc")) as file:
+    with open(os.path.join(relpath, "transitions.cc")) as file:
         template = os.linesep.join(row.rstrip() for row in file)
 
     template = template.replace("{terminals}", ",\n\t".join('"%s"' % t for t in terminals))
@@ -75,7 +75,16 @@ def generateParserFromLR1_CPlusPlus(lr1_file, verbose=False):
         for state, values in transitions.items()
     ))
     
-    with open(os.path.join("Parser", "parser.cc"), "w") as file:
+    with open(os.path.join("Parser", "transitions.cc"), "w") as file:
+        file.write(template)
+
+
+    with open(os.path.join(relpath, "parser.h")) as file:
+        template = os.linesep.join(row.rstrip() for row in file)
+
+    template = template.replace("// #define INCLUDE_TRANSITIONS", "#define INCLUDE_TRANSITIONS")
+    
+    with open(os.path.join("Parser", "parser.h"), "w") as file:
         file.write(template)
 
 

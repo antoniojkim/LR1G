@@ -6,6 +6,8 @@
 #include <list>
 #include <string>
 
+namespace Scanner {
+
 enum Type {
 	ID,
 	STR,
@@ -75,5 +77,8 @@ bool scan(const std::string& str, std::list<Token>& tokens);
 // void scan(std::istream& in, std::list<Token>& tokens);
 
 std::ostream& print(std::ostream& out, std::list<Token> tokens, const std::string& delimiter="", const bool& printType=false);
+std::string join(std::list<Token> tokens, const std::string& delimiter="", const bool& printType=false);
+
+}
 
 #endif

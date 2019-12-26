@@ -31,23 +31,11 @@ def LR1G(args):
             if not os.path.isdir("Parser"):
                 os.mkdir("Parser")
 
-
-            for file in ("parser.h", "parser.cc", "parsetree.h", "parsetree.cc", "StringUtils.h"):
-                shutil.copyfile(os.path.join(relpath, "Scripts", "Templates", "C++", file), 
-                                os.path.join("Parser", file))
-
-            if args.full_parser:
-                shutil.copyfile(os.path.join(relpath, "Scripts", "Templates", "C++", "fullparser.h"), 
-                                os.path.join("Parser", "parser.h"))
-
+            if args.parser_transitions:
                 generateParserFromLR1_CPlusPlus(lr1_file)
 
-            else:
-                for file in ("parser.h", "parser.cc"):
-                    shutil.copyfile(os.path.join(relpath, "Scripts", "Templates", "C++", file), 
-                                    os.path.join("Parser", file))
-
-            for file in ("parsetree.h", "parsetree.cc", "StringUtils.h"):
+            for file in ("transitions.h" if args.parser_transitions else "parser.h",
+                         "parser.cc", "parsetree.h", "parsetree.cc", "StringUtils.h"):
                 shutil.copyfile(os.path.join(relpath, "Scripts", "Templates", "C++", file), 
                                 os.path.join("Parser", file))
 
@@ -85,13 +73,13 @@ if __name__ == "__main__":
                         help='If flag raised, does NOT generate scanner')
     parser.add_argument('-p', '--p', '-P', '--P', action='store_false', dest='parser',
                         help='If flag raised, does NOT generate parser')
-    parser.add_argument('-f', '--f', '-F', '--F', action='store_true', dest='full_parser',
-                        help='If flag raised, generates full parser')
+    parser.add_argument('-t', '--t', '-T', '--T', action='store_true', dest='parser_transitions',
+                        help='If flag raised, generates transitions for parser inline')
     parser.add_argument('-c', '--c', '-C', '--C', action='store_true', dest='code_generator',
                         help='If flag raised, generates code generator')
     parser.add_argument('-a', '--a', '-A', '--A', action='store_true', dest='semantic_analyser',
                         help='If flag raised, generates semantic analyser')
-    parser.add_argument('-t', '--t', '-T', '--T', action='store_true', dest='context_sensitive_trees',
+    parser.add_argument('-ct', '--ct', '-CT', '--CT', action='store_true', dest='context_sensitive_trees',
                         help='If flag raised, generates context sensitive trees')
     parser.add_argument('-m', '--m', '-M', '--M', action='store_true', dest='markdown',
                         help='If flag raised, generated markdown file containing language specifications')

@@ -6,6 +6,7 @@
 #include <unordered_set>
 
 using namespace std;
+using namespace Scanner;
 
 // unordered_map<string, Type> keywordType = {
 // 	{keywordTypes}
@@ -103,9 +104,10 @@ unordered_map<Type, string> typeLexeme = {
 // };
 
 std::regex whitespace_regex("^\\s+");
+std::regex hex_regex("^(0x[0-9a-fA-f]+)");
 std::regex num_regex("^(\\d*\\.?\\d+(i(?![a-zA-Z]))?)");
-std::regex id_regex("^(x|y|sin|sinh|asin|arcsin|cos|cosh|acos|arccos|integrate)");
-std::regex token_regex("^\\(|\\)|\\[|\\]|\\{|\\}|=|\\+|-|\\*|/|%|\\^|&|\\||~|!|\\^\\||\\*\\*|//|<<|>>|<-|->|:=|\\.|,|:|;|\\?|#|\\$|\\\"|'|\\\\|`|_|BOF|EOF");
+std::regex id_regex("^(integrate|arcsin|arccos|sinh|asin|cosh|acos|sin|cos|x|y)");
+std::regex token_regex("^BOF|EOF|\\^\\||\\*\\*|//|<<|>>|<-|->|:=|\\\"|\\\\|\\(|\\)|\\[|\\]|\\{|\\}|=|\\+|-|\\*|/|%|\\^|&|\\||~|!|\\.|,|:|;|\\?|#|\\$|'|`|_");
 
 // Type getType(char c) {
 //     if ('0' <= c && c <= '9')  return NUM;
@@ -127,7 +129,7 @@ std::regex token_regex("^\\(|\\)|\\[|\\]|\\{|\\}|=|\\+|-|\\*|/|%|\\^|&|\\||~|!|\
 //     }
 // }
 
-std::string getTypeString(const Type& type) {
+std::string Scanner::getTypeString(const Type& type) {
     if (keywordLexeme.count(type) > 0) return keywordLexeme[type];
     if (typeLexeme.count(type) > 0)    return typeLexeme[type];
     if (type == ID)                    return "ID";
@@ -138,49 +140,34 @@ std::string getTypeString(const Type& type) {
     return "NONE";
 }
 
-bool scan(const std::string& str, std::list<Token>& tokens) {
+bool Scanner::scan(const std::string& str, std::list<Token>& tokens) {
     if (str.empty()) return true;
 
     std::smatch match;
     if (std::regex_search(str, match, whitespace_regex)){
-        return scan(match.suffix(), tokens);
+        return Scanner::scan(match.suffix(), tokens);
+    }
+    if (std::regex_search(str, match, hex_regex)){
+        tokens.emplace_back(Token{match[0], NUM});
+        return Scanner::scan(match.suffix(), tokens);
     }
     if (std::regex_search(str, match, num_regex)){
-        int longest_at = 0;
-        for(int i = 1; i < match.size(); ++i){
-            if (match[i].length() > match[longest_at].length()){
-                longest_at = i;
-            }
-        }
-        tokens.emplace_back(Token{match[longest_at], NUM});
-        return scan(match.suffix(), tokens);
+        tokens.emplace_back(Token{match[0], NUM});
+        return Scanner::scan(match.suffix(), tokens);
     }
     if (std::regex_search(str, match, id_regex)){
-        int longest_at = 0;
-        for(int i = 1; i < match.size(); ++i){
-            if (match[i].length() > match[longest_at].length()){
-                longest_at = i;
-            }
-        }
-        tokens.emplace_back(Token{match[longest_at], ID});
-        return scan(match.suffix(), tokens);
+        tokens.emplace_back(Token{match[0], ID});
+        return Scanner::scan(match.suffix(), tokens);
     }
     if (std::regex_search(str, match, token_regex)){
-        int longest_at = 0;
-        for(int i = 1; i < match.size(); ++i){
-            if (match[i].length() > match[longest_at].length()){
-                longest_at = i;
-            }
-        }
-        tokens.emplace_back(Token{match[longest_at], tokenType[match[longest_at]]});
-        return scan(match.suffix(), tokens);
+        tokens.emplace_back(Token{match[0], tokenType[match[0]]});
+        return Scanner::scan(match.suffix(), tokens);
     }
     return false;
 }
 
 
-
-ostream& print(ostream& out, list<Token> tokens, const string& delimiter, const bool& printType) {
+ostream& Scanner::print(ostream& out, list<Token> tokens, const string& delimiter, const bool& printType) {
     bool first = true;
     for (auto& token : tokens) {
         if (first) {
@@ -194,4 +181,21 @@ ostream& print(ostream& out, list<Token> tokens, const string& delimiter, const 
         }
     }
     return out;
+}
+
+string Scanner::join(list<Token> tokens, const string& delimiter, const bool& printType) {
+    ostringstream out;
+    bool first = true;
+    for (auto& token : tokens) {
+        if (first) {
+            first = false;
+        } else {
+            out << delimiter;
+        }
+        if (printType){
+            out << "  " << getTypeString(token.type);
+        }
+        out << token.lexeme;
+    }
+    return out.str();
 }

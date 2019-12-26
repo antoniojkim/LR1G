@@ -5,6 +5,7 @@
 #include <sstream>
 
 using namespace std;
+using namespace Scanner;
 
 Terminal* ParseTree::getTerminal() { throw "Trying to get terminal from nonterminal"; }
 NonTerminal* ParseTree::getNonTerminal() { throw "Trying to get nonterminal from terminal"; }

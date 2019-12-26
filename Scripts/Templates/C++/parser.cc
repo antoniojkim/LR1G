@@ -9,6 +9,14 @@
 using namespace std;
 using namespace Scanner;
 
+#ifdef INCLUDE_TRANSITIONS
+
+#include "transitions.h"
+
+Parser::Parser() {}
+
+#else
+
 template <class T>
 T getNext(const string& str) {
     istringstream iss{str};
@@ -20,14 +28,7 @@ T getNext(const string& str) {
 template <class T>
 T getNext(istringstream& iss) {
     T i;
-    if (!(iss >> i)) throw "Failed to get next from istringstream";
-    return i;
-}
-
-Parser::Parser(const std::string& lr1Path) {
-    ifstream f{lr1Path};
-    string s;
-
+Parser::Parser() {}
     if (!getline(f, s)) throw "Expected Line with number of terminals";
     int numTerminals = getNext<int>(s);
     for (int i = 0; i < numTerminals; ++i) {
@@ -87,6 +88,8 @@ Parser::Parser(const std::string& lr1Path) {
         }
     }
 }
+
+#endif // INCLUDE_TRANSITIONS
 
 std::unique_ptr<ParseTree> Parser::parse(const std::string& input,
                                          const bool& showTokens) {
@@ -157,6 +160,37 @@ std::unique_ptr<ParseTree> Parser::parse(list<Token>& tokens) {
 }
 
 string actions[2] = {"SHIFT", "REDUCE"};
+
+#ifdef INCLUDE_TRANSITIONS
+
+ostream& operator<<(ostream& out, Parser& parser) {
+    out << "Terminals:" << endl;
+    for (auto& terminal : terminals) {
+        out << "    " << terminal.first << endl;
+    }
+    out << "Non Terminals:" << endl;
+    for (auto& nonterminal : nonterminals) {
+        out << "    " << nonterminal.first << endl;
+    }
+    out << "Start Symbol:" << startSymbol << endl;
+    out << "Rules:" << endl;
+    for (auto& rule : rules) {
+        out << "    " << join(rule, ' ') << endl;
+    }
+    out << "Num States:" << numStates << endl;
+    out << "Transitions:" << endl;
+    for (auto& state : transitions) {
+        for (auto& symbol : state.second) {
+            out << "    " << state.first << " " << symbol.first << " "
+                << actions[symbol.second.first] << " " << symbol.second.second
+                << endl;
+        }
+    }
+    return out;
+}
+
+#else
+
 ostream& operator<<(ostream& out, Parser& parser) {
     out << "Terminals:" << endl;
     for (auto& terminal : parser.terminals) {
@@ -182,3 +216,6 @@ ostream& operator<<(ostream& out, Parser& parser) {
     }
     return out;
 }
+
+#endif // INCLUDE_TRANSITIONS
+
