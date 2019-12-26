@@ -12,6 +12,7 @@
 #include <vector>
 
 using namespace std;
+using namespace Scanner;
 
 
 unordered_set<string> terminals({

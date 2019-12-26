@@ -14,7 +14,7 @@ class Parser {
     Parser();
 
     std::unique_ptr<ParseTree> parse(const std::string& input, const bool& verbose=false);
-    std::unique_ptr<ParseTree> parse(std::list<Token>& tokens);
+    std::unique_ptr<ParseTree> parse(std::list<Scanner::Token>& tokens);
 
     friend std::ostream& operator<<(std::ostream& out, Parser& parser);
 };
