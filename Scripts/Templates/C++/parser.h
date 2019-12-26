@@ -22,7 +22,7 @@ class Parser {
     Parser(const std::string& lr1Path);
 
     std::unique_ptr<ParseTree> parse(const std::string& input, const bool& showTokens=false);
-    std::unique_ptr<ParseTree> parse(std::list<Token>& tokens);
+    std::unique_ptr<ParseTree> parse(std::list<Scanner::Token>& tokens);
 
     friend std::ostream& operator<<(std::ostream& out, Parser& parser);
 };

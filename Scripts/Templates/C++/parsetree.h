@@ -24,17 +24,17 @@ struct ParseTree {
 };
 
 class Terminal : public ParseTree {
-    Token token;
+    Scanner::Token token;
     std::string typeString;
 
    public:
-    Terminal(const Token& token);
+    Terminal(const Scanner::Token& token);
 
     std::string& getRoot() override;
     std::string& getFirst() override;
     bool isTerminal() override;
     Terminal* getTerminal() override;
-    Token& getToken();
+    Scanner::Token& getToken();
 
     std::ostream& print(std::ostream& out, const std::string& indent) override;
 };

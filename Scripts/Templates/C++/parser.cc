@@ -7,6 +7,7 @@
 #include "StringUtils.h"
 
 using namespace std;
+using namespace Scanner;
 
 template <class T>
 T getNext(const string& str) {

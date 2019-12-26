@@ -50,7 +50,7 @@ std::regex token_regex("{token_regex}");
 //     }
 // }
 
-std::string getTypeString(const Type& type) {
+std::string Scanner::getTypeString(const Type& type) {
     if (keywordLexeme.count(type) > 0) return keywordLexeme[type];
     if (typeLexeme.count(type) > 0)    return typeLexeme[type];
     if (type == ID)                    return "ID";
@@ -61,34 +61,34 @@ std::string getTypeString(const Type& type) {
     return "NONE";
 } 
     
-bool scan(const std::string& str, std::list<Token>& tokens) {
+bool Scanner::scan(const std::string& str, std::list<Token>& tokens) {
     if (str.empty()) return true;
 
     std::smatch match;
     if (std::regex_search(str, match, whitespace_regex)){
-        return scan(match.suffix(), tokens);
+        return Scanner::scan(match.suffix(), tokens);
     }
     if (std::regex_search(str, match, hex_regex)){
         tokens.emplace_back(Token{match[0], NUM});
-        return scan(match.suffix(), tokens);
+        return Scanner::scan(match.suffix(), tokens);
     }
     if (std::regex_search(str, match, num_regex)){
         tokens.emplace_back(Token{match[0], NUM});
-        return scan(match.suffix(), tokens);
+        return Scanner::scan(match.suffix(), tokens);
     }
     if (std::regex_search(str, match, id_regex)){
         tokens.emplace_back(Token{match[0], ID});
-        return scan(match.suffix(), tokens);
+        return Scanner::scan(match.suffix(), tokens);
     }
     if (std::regex_search(str, match, token_regex)){
         tokens.emplace_back(Token{match[0], tokenType[match[0]]});
-        return scan(match.suffix(), tokens);
+        return Scanner::scan(match.suffix(), tokens);
     }
     return false;
 }
 
 
-ostream& print(ostream& out, list<Token> tokens, const string& delimiter, const bool& printType) {
+ostream& Scanner::print(ostream& out, list<Token> tokens, const string& delimiter, const bool& printType) {
     bool first = true;
     for (auto& token : tokens) {
         if (first) {
@@ -104,7 +104,7 @@ ostream& print(ostream& out, list<Token> tokens, const string& delimiter, const 
     return out;
 }
 
-string join(list<Token> tokens, const string& delimiter, const bool& printType) {
+string Scanner::join(list<Token> tokens, const string& delimiter, const bool& printType) {
     ostringstream out;
     bool first = true;
     for (auto& token : tokens) {
