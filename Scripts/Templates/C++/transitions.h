@@ -1,6 +1,7 @@
 #ifndef __TRANSITIONS_H__
 #define __TRANSITIONS_H__
 
+#include <list>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>

@@ -166,18 +166,16 @@ string actions[2] = {"SHIFT", "REDUCE"};
 ostream& operator<<(ostream& out, Parser& parser) {
     out << "Terminals:" << endl;
     for (auto& terminal : terminals) {
-        out << "    " << terminal.first << endl;
+        out << "    " << terminal << endl;
     }
     out << "Non Terminals:" << endl;
     for (auto& nonterminal : nonterminals) {
-        out << "    " << nonterminal.first << endl;
+        out << "    " << nonterminal << endl;
     }
-    out << "Start Symbol:" << startSymbol << endl;
     out << "Rules:" << endl;
     for (auto& rule : rules) {
         out << "    " << join(rule, ' ') << endl;
     }
-    out << "Num States:" << numStates << endl;
     out << "Transitions:" << endl;
     for (auto& state : transitions) {
         for (auto& symbol : state.second) {
