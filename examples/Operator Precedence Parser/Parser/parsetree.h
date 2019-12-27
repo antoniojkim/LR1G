@@ -32,15 +32,8 @@ class Terminal : public ParseTree {
 
     std::string& getRoot() override;
     std::string& getFirst() override;
-    bool isTerminal() override;
-    Terminal* getTerminal() override;
-    Scanner::Token& getToken();
-
-    std::ostream& print(std::ostream& out, const std::string& indent) override;
-};
-
-class NonTerminal : public ParseTree {
-    std::string root;
+    bool isTerminal() override;shutil.copyfile(os.path.join(relpath, "Scripts", "Templates", "C++", file), 
+                
     std::string first;
     std::string rule;
     std::vector<std::unique_ptr<ParseTree>> children;
@@ -52,6 +45,7 @@ class NonTerminal : public ParseTree {
     void addChild(std::unique_ptr<ParseTree>& child);
     std::vector<std::unique_ptr<ParseTree>>& getChildren();
     std::unique_ptr<ParseTree>& getChild(const int& i);
+    ParseTree* operator[](const int& i);
 
     std::string& getRoot() override;
     std::string& getFirst() override;
