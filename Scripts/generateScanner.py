@@ -1,5 +1,6 @@
 
 import os
+import textwrap
 import yaml
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
@@ -19,18 +20,18 @@ def generateScannerCPlusPlus(infile, verbose=False):
         os.mkdir("Scanner/")
 
 
+    def wrap(text, width=80, indent="    "):
+        return (os.linesep + indent).join(textwrap.fill(text, width).split(os.linesep))
+
+
     with open(os.path.join(relpath, "scanner.h")) as file:
         template = os.linesep.join(row.rstrip() for row in file)
 
-    template = template.replace("{types}", ",\n\t".join([
-            str(key) for token in specs["tokens"] for key in token
-        ]+[
-            str(key) for keyword in specs["keywords"] for key in keyword
-        ]+[
-            "WHITESPACE",
-            "NONE"
-        ])
-    )
+    types = [str(key) for token in specs["tokens"] for key in token] + \
+            [str(key) for keyword in specs["keywords"] for key in keyword] + \
+            ["WHITESPACE", "NONE"]
+
+    template = template.replace("{types}", wrap(", ".join(types), indent=" "*8))
 
     with open(os.path.join("Scanner", "scanner.h"), "w") as file:
         file.write(template)
@@ -40,48 +41,32 @@ def generateScannerCPlusPlus(infile, verbose=False):
         template = os.linesep.join(row.rstrip() for row in file)
 
     keywordType = {keyword[key]['lexeme']: key for keyword in specs["keywords"] for key in keyword}
-    # template = template.replace(
-    #     "{keywordTypes}",
-    #     ",\n\t".join(["{{\"{k}\", {v}}}".format(k=k, v=v) for k, v in keywordType.items()])
-    # )
 
     keywordLexeme = {v:k for k, v in keywordType.items()}
-    template = template.replace(
-        "{keywordLexemes}",
-        ",\n\t".join(["{{{k}, \"{v}\"}}".format(k=k, v=v.upper()) for k, v in keywordLexeme.items()])
-    )
+    # template = template.replace(
+    #     "{keywordLexemes}",
+    #     wrap(", ".join(["{{{k}, \"{v}\"}}".format(k=k, v=v.upper()) for k, v in keywordLexeme.items()]))
+    # )
 
     tokenType = {token[key]['lexeme'].replace("\"", "\\\""):key for token in specs["tokens"] for key in token if "lexeme" in token[key]}    
     template = template.replace(
         "{tokenTypes}",
-        ",\n\t".join(["{{\"{k}\", {v}}}".format(k=k, v=v) for k, v in tokenType.items()])
+        ",\n    ".join(['{{"{k}", {v}}}'.format(k=k, v=v) for k, v in tokenType.items()])
     )
 
     typeLexeme = {v:k for k, v in tokenType.items()}
     template = template.replace(
         "{typeLexemes}",
-        ",\n\t".join(["{{{k}, \"{k}\"}}".format(k=k, v=v) for k, v in typeLexeme.items()])
+        ",\n    ".join(
+            ['{{{k}, "{k}"}}'.format(k=k, v=v) for k, v in typeLexeme.items()] + \
+            ["{{{k}, \"{v}\"}}".format(k=k, v=v.upper()) for k, v in keywordLexeme.items()]
+        )
     )
 
-    # charType = {k.replace("'", "\\'"):v for k, v in tokenType.items() if len(k) == 1 or k == "\\\""}
-    # template = template.replace(
-    #     "{charTypes}",
-    #     ",\n\t".join(["{{'{k}', {v}}}".format(k=k, v=v) for k, v in charType.items()])
-    # )
-
-    # template = template.replace(
-    #     "{current_transitions}",
-    #     "".join("""
-    #     }} else if (current == {current} && type == {type}) {{ /*  {k}  */
-    #         current = {new_current};""".format(
-    #         current=tokenType[k[:-1]],
-    #         type=tokenType[k[-1:]],
-    #         k=k,
-    #         new_current=tokenType[k]
-    #     )
-    #     for k, v in tokenType.items()
-    #     if len(k) in (2, 3) and k[:-1] in tokenType and k[-1:] in tokenType)
-    # )
+    template = template.replace("{type_cases}", "\n        ".join(
+        'case {t}: return "{t}";'.format(t=t)
+        for t in types
+    ))
 
     num_regex = specs.get("num_regex", "\\d*\\.?\\d+").replace("\\", "\\\\")
     if not num_regex.startswith("^"):
@@ -99,10 +84,10 @@ def generateScannerCPlusPlus(infile, verbose=False):
 
     template = template.replace("{id_regex}", id_regex)
 
-    token_regex = "^" + "|".join(map(
-        lambda token: "".join("\\%s" % c if c in special_characters else c for c in list(token)),
-        sorted(tokenType.keys(), key=len, reverse=True)
-    )).replace("\\", "\\\\").replace("\"", "\\\"")
+    token_regex = "^" + "|".join(
+        "".join("\\%s" % c if c in special_characters else c for c in list(token))
+        for token in sorted(tokenType.keys(), key=len, reverse=True)
+    ).replace("\\", "\\\\").replace("\"", "\\\"")
     template = template.replace("{token_regex}", token_regex)
 
     

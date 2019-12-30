@@ -1,0 +1,1007 @@
+Rules:
+    0  statement expr
+    1  expr lvalue EQUALS expr1
+    2  expr lvalue COLON_EQUALS expr1
+    3  expr lvalue L_ARROW expr1
+    4  expr expr1
+    5  expr1 expr13
+    6  expr1 expr6
+    7  expr1 exprn
+    8  expr13 expr13 PIPE expr12
+    9  expr13 expr12
+    10  expr12 expr12 CARET_PIPE expr11
+    11  expr12 expr11
+    12  expr11 expr11 AMP expr7
+    13  expr11 expr7
+    14  expr7 expr7 LT_LT expr6
+    15  expr7 expr7 GT_GT expr6
+    16  expr6 expr6 PLUS expr5
+    17  expr6 expr6 MINUS expr5
+    18  expr6 expr5
+    19  expr5 expr5 STAR expr4
+    20  expr5 expr5 SLASH expr4
+    21  expr5 expr5 SLASH_SLASH expr4
+    22  expr5 expr5 PCT expr4
+    23  expr5 expr5 C expr4
+    24  expr5 expr5 P expr4
+    25  expr5 exprn exprn
+    26  expr5 expr4
+    27  expr4 expr4 CARET expr3
+    28  expr4 expr4 STAR_STAR expr3
+    29  expr4 expr4 EXCL
+    30  expr4 expr3
+    31  expr3 TILDE exprn
+    32  exprn ID exprn
+    33  exprn ID LPAREN arglist RPAREN
+    34  exprn factor
+    35  exprn lvalue
+    36  factor NUM
+    37  factor X
+    38  factor Y
+    39  factor NONE_
+    40  factor TRUE_
+    41  factor FALSE_
+    42  factor PIPE expr PIPE
+    43  factor LPAREN expr RPAREN
+    44  lvalue LPAREN lvalue RPAREN
+    45  arglist
+    46  arglist expr
+    47  arglist expr COMMA arglist
+    48  start BOF_ statement EOF_ 
+
+Nullable:
+    statement: False
+    expr: False
+    expr1: False
+    expr13: False
+    expr12: False
+    expr11: False
+    expr7: False
+    expr6: False
+    expr5: False
+    expr4: False
+    expr3: False
+    exprn: False
+    factor: False
+    lvalue: False
+    arglist: True 
+
+First:
+    statement: ['TILDE', 'ID', 'NUM', 'X', 'Y', 'NONE_', 'TRUE_', 'FALSE_', 'PIPE', 'LPAREN']
+    expr: ['TILDE', 'ID', 'NUM', 'X', 'Y', 'NONE_', 'TRUE_', 'FALSE_', 'PIPE', 'LPAREN']
+    expr1: ['TILDE', 'ID', 'NUM', 'X', 'Y', 'NONE_', 'TRUE_', 'FALSE_', 'PIPE', 'LPAREN']
+    expr13: []
+    expr12: []
+    expr11: []
+    expr7: []
+    expr6: ['TILDE', 'ID', 'NUM', 'X', 'Y', 'NONE_', 'TRUE_', 'FALSE_', 'PIPE', 'LPAREN']
+    expr5: ['TILDE', 'ID', 'NUM', 'X', 'Y', 'NONE_', 'TRUE_', 'FALSE_', 'PIPE', 'LPAREN']
+    expr4: ['TILDE']
+    expr3: ['TILDE']
+    exprn: ['ID', 'NUM', 'X', 'Y', 'NONE_', 'TRUE_', 'FALSE_', 'PIPE', 'LPAREN']
+    factor: ['NUM', 'X', 'Y', 'NONE_', 'TRUE_', 'FALSE_', 'PIPE', 'LPAREN']
+    lvalue: ['LPAREN']
+    arglist: ['FALSE_', 'ID', 'LPAREN', 'NONE_', 'NUM', 'PIPE', 'TILDE', 'TRUE_', 'X', 'Y']
+    start: ['BOF_'] 
+
+Follow:
+    expr: ['PIPE', 'RPAREN', 'COMMA', 'EOF_']
+    expr1: ['PIPE', 'RPAREN', 'COMMA', 'EOF_']
+    expr13: ['PIPE', 'RPAREN', 'COMMA', 'EOF_']
+    expr12: ['PIPE', 'CARET_PIPE', 'RPAREN', 'COMMA', 'EOF_']
+    expr11: ['CARET_PIPE', 'PIPE', 'AMP', 'RPAREN', 'COMMA', 'EOF_']
+    expr7: ['AMP', 'CARET_PIPE', 'PIPE', 'LT_LT', 'GT_GT', 'RPAREN', 'COMMA', 'EOF_']
+    expr6: ['AMP', 'CARET_PIPE', 'LT_LT', 'PIPE', 'GT_GT', 'PLUS', 'MINUS', 'RPAREN', 'COMMA', 'EOF_']
+    expr5: ['AMP', 'CARET_PIPE', 'GT_GT', 'LT_LT', 'PIPE', 'PLUS', 'MINUS', 'STAR', 'SLASH', 'SLASH_SLASH', 'PCT', 'C', 'P', 'RPAREN', 'COMMA', 'EOF_']
+    expr4: ['AMP', 'CARET_PIPE', 'GT_GT', 'LT_LT', 'MINUS', 'PIPE', 'PLUS', 'STAR', 'SLASH', 'SLASH_SLASH', 'PCT', 'C', 'P', 'CARET', 'STAR_STAR', 'EXCL', 'RPAREN', 'COMMA', 'EOF_']
+    expr3: ['AMP', 'C', 'CARET', 'CARET_PIPE', 'GT_GT', 'LT_LT', 'MINUS', 'P', 'PCT', 'PIPE', 'PLUS', 'SLASH', 'SLASH_SLASH', 'STAR', 'STAR_STAR', 'EXCL', 'RPAREN', 'COMMA', 'EOF_']
+    exprn: ['FALSE_', 'ID', 'LPAREN', 'NONE_', 'NUM', 'PIPE', 'TRUE_', 'X', 'Y', 'AMP', 'C', 'CARET_PIPE', 'GT_GT', 'LT_LT', 'MINUS', 'P', 'PCT', 'PLUS', 'SLASH', 'SLASH_SLASH', 'STAR', 'CARET', 'EXCL', 'STAR_STAR', 'RPAREN', 'COMMA', 'EOF_']
+    factor: ['AMP', 'C', 'CARET', 'CARET_PIPE', 'EXCL', 'FALSE_', 'GT_GT', 'ID', 'LPAREN', 'LT_LT', 'MINUS', 'NONE_', 'NUM', 'P', 'PCT', 'PIPE', 'PLUS', 'SLASH', 'SLASH_SLASH', 'STAR', 'STAR_STAR', 'TRUE_', 'X', 'Y', 'RPAREN', 'COMMA', 'EOF_']
+    lvalue: ['EQUALS', 'COLON_EQUALS', 'L_ARROW', 'AMP', 'C', 'CARET', 'CARET_PIPE', 'EXCL', 'FALSE_', 'GT_GT', 'ID', 'LPAREN', 'LT_LT', 'MINUS', 'NONE_', 'NUM', 'P', 'PCT', 'PIPE', 'PLUS', 'SLASH', 'SLASH_SLASH', 'STAR', 'STAR_STAR', 'TRUE_', 'X', 'Y', 'RPAREN', 'COMMA', 'EOF_']
+    arglist: ['RPAREN']
+    start: []
+    statement: ['EOF_'] 
+
+State 1:
+    start BOF_ ⋅ statement EOF_
+    statement ⋅ expr
+    expr ⋅ lvalue EQUALS expr1
+    expr ⋅ lvalue COLON_EQUALS expr1
+    expr ⋅ lvalue L_ARROW expr1
+    expr ⋅ expr1
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr1 ⋅ expr13
+    expr1 ⋅ expr6
+    expr1 ⋅ exprn
+    expr13 ⋅ expr13 PIPE expr12
+    expr13 ⋅ expr12
+    expr6 ⋅ expr6 PLUS expr5
+    expr6 ⋅ expr6 MINUS expr5
+    expr6 ⋅ expr5
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr12 ⋅ expr12 CARET_PIPE expr11
+    expr12 ⋅ expr11
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    expr11 ⋅ expr11 AMP expr7
+    expr11 ⋅ expr7
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    expr3 ⋅ TILDE exprn
+    Transitions: statement->2, expr->3, lvalue->4, expr1->5, LPAREN->6, expr13->7, expr6->8, exprn->9, expr12->10, expr5->11, ID->12, factor->13, expr11->14, expr4->15, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, expr7->23, expr3->24, TILDE->25
+State 2:
+    start BOF_ statement ⋅ EOF_
+    Transitions: EOF_->26
+State 3:
+    statement expr ⋅
+    Transitions: 
+State 4:
+    expr lvalue ⋅ EQUALS expr1
+    expr lvalue ⋅ COLON_EQUALS expr1
+    expr lvalue ⋅ L_ARROW expr1
+    exprn lvalue ⋅
+    Transitions: EQUALS->27, COLON_EQUALS->28, L_ARROW->29
+State 5:
+    expr expr1 ⋅
+    Transitions: 
+State 6:
+    lvalue LPAREN ⋅ lvalue RPAREN
+    factor LPAREN ⋅ expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr ⋅ lvalue EQUALS expr1
+    expr ⋅ lvalue COLON_EQUALS expr1
+    expr ⋅ lvalue L_ARROW expr1
+    expr ⋅ expr1
+    expr1 ⋅ expr13
+    expr1 ⋅ expr6
+    expr1 ⋅ exprn
+    expr13 ⋅ expr13 PIPE expr12
+    expr13 ⋅ expr12
+    expr6 ⋅ expr6 PLUS expr5
+    expr6 ⋅ expr6 MINUS expr5
+    expr6 ⋅ expr5
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr12 ⋅ expr12 CARET_PIPE expr11
+    expr12 ⋅ expr11
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    expr11 ⋅ expr11 AMP expr7
+    expr11 ⋅ expr7
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    expr3 ⋅ TILDE exprn
+    Transitions: lvalue->65, expr->66, LPAREN->6, expr1->5, expr13->7, expr6->8, exprn->9, expr12->10, expr5->11, ID->12, factor->13, expr11->14, expr4->15, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, expr7->23, expr3->24, TILDE->25
+State 7:
+    expr1 expr13 ⋅
+    expr13 expr13 ⋅ PIPE expr12
+    Transitions: PIPE->33
+State 8:
+    expr1 expr6 ⋅
+    expr6 expr6 ⋅ PLUS expr5
+    expr6 expr6 ⋅ MINUS expr5
+    Transitions: PLUS->43, MINUS->44
+State 9:
+    expr1 exprn ⋅
+    expr5 exprn ⋅ exprn
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    Transitions: exprn->76, ID->12, factor->13, lvalue->31, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, LPAREN->32
+State 10:
+    expr13 expr12 ⋅
+    expr12 expr12 ⋅ CARET_PIPE expr11
+    Transitions: CARET_PIPE->35
+State 11:
+    expr6 expr5 ⋅
+    expr5 expr5 ⋅ STAR expr4
+    expr5 expr5 ⋅ SLASH expr4
+    expr5 expr5 ⋅ SLASH_SLASH expr4
+    expr5 expr5 ⋅ PCT expr4
+    expr5 expr5 ⋅ C expr4
+    expr5 expr5 ⋅ P expr4
+    Transitions: STAR->46, SLASH->47, SLASH_SLASH->48, PCT->49, C->50, P->51
+State 12:
+    exprn ID ⋅ exprn
+    exprn ID ⋅ LPAREN arglist RPAREN
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    Transitions: exprn->58, LPAREN->59, ID->12, factor->13, lvalue->31, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22
+State 13:
+    exprn factor ⋅
+    Transitions: 
+State 14:
+    expr12 expr11 ⋅
+    expr11 expr11 ⋅ AMP expr7
+    Transitions: AMP->37
+State 15:
+    expr5 expr4 ⋅
+    expr4 expr4 ⋅ CARET expr3
+    expr4 expr4 ⋅ STAR_STAR expr3
+    expr4 expr4 ⋅ EXCL
+    Transitions: CARET->53, STAR_STAR->54, EXCL->55
+State 16:
+    factor NUM ⋅
+    Transitions: 
+State 17:
+    factor X ⋅
+    Transitions: 
+State 18:
+    factor Y ⋅
+    Transitions: 
+State 19:
+    factor NONE_ ⋅
+    Transitions: 
+State 20:
+    factor TRUE_ ⋅
+    Transitions: 
+State 21:
+    factor FALSE_ ⋅
+    Transitions: 
+State 22:
+    factor PIPE ⋅ expr PIPE
+    expr ⋅ lvalue EQUALS expr1
+    expr ⋅ lvalue COLON_EQUALS expr1
+    expr ⋅ lvalue L_ARROW expr1
+    expr ⋅ expr1
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr1 ⋅ expr13
+    expr1 ⋅ expr6
+    expr1 ⋅ exprn
+    expr13 ⋅ expr13 PIPE expr12
+    expr13 ⋅ expr12
+    expr6 ⋅ expr6 PLUS expr5
+    expr6 ⋅ expr6 MINUS expr5
+    expr6 ⋅ expr5
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr12 ⋅ expr12 CARET_PIPE expr11
+    expr12 ⋅ expr11
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    expr11 ⋅ expr11 AMP expr7
+    expr11 ⋅ expr7
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    expr3 ⋅ TILDE exprn
+    Transitions: expr->77, lvalue->4, expr1->5, LPAREN->6, expr13->7, expr6->8, exprn->9, expr12->10, expr5->11, ID->12, factor->13, expr11->14, expr4->15, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, expr7->23, expr3->24, TILDE->25
+State 23:
+    expr11 expr7 ⋅
+    expr7 expr7 ⋅ LT_LT expr6
+    expr7 expr7 ⋅ GT_GT expr6
+    Transitions: LT_LT->39, GT_GT->40
+State 24:
+    expr4 expr3 ⋅
+    Transitions: 
+State 25:
+    expr3 TILDE ⋅ exprn
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    Transitions: exprn->57, ID->12, factor->13, lvalue->31, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, LPAREN->32
+State 26:
+    start BOF_ statement EOF_ ⋅
+    Transitions: 
+State 27:
+    expr lvalue EQUALS ⋅ expr1
+    expr1 ⋅ expr13
+    expr1 ⋅ expr6
+    expr1 ⋅ exprn
+    expr13 ⋅ expr13 PIPE expr12
+    expr13 ⋅ expr12
+    expr6 ⋅ expr6 PLUS expr5
+    expr6 ⋅ expr6 MINUS expr5
+    expr6 ⋅ expr5
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr12 ⋅ expr12 CARET_PIPE expr11
+    expr12 ⋅ expr11
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr11 ⋅ expr11 AMP expr7
+    expr11 ⋅ expr7
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    expr3 ⋅ TILDE exprn
+    Transitions: expr1->30, expr13->7, expr6->8, exprn->9, expr12->10, expr5->11, ID->12, factor->13, lvalue->31, expr11->14, expr4->15, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, LPAREN->32, expr7->23, expr3->24, TILDE->25
+State 28:
+    expr lvalue COLON_EQUALS ⋅ expr1
+    expr1 ⋅ expr13
+    expr1 ⋅ expr6
+    expr1 ⋅ exprn
+    expr13 ⋅ expr13 PIPE expr12
+    expr13 ⋅ expr12
+    expr6 ⋅ expr6 PLUS expr5
+    expr6 ⋅ expr6 MINUS expr5
+    expr6 ⋅ expr5
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr12 ⋅ expr12 CARET_PIPE expr11
+    expr12 ⋅ expr11
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr11 ⋅ expr11 AMP expr7
+    expr11 ⋅ expr7
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    expr3 ⋅ TILDE exprn
+    Transitions: expr1->68, expr13->7, expr6->8, exprn->9, expr12->10, expr5->11, ID->12, factor->13, lvalue->31, expr11->14, expr4->15, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, LPAREN->32, expr7->23, expr3->24, TILDE->25
+State 29:
+    expr lvalue L_ARROW ⋅ expr1
+    expr1 ⋅ expr13
+    expr1 ⋅ expr6
+    expr1 ⋅ exprn
+    expr13 ⋅ expr13 PIPE expr12
+    expr13 ⋅ expr12
+    expr6 ⋅ expr6 PLUS expr5
+    expr6 ⋅ expr6 MINUS expr5
+    expr6 ⋅ expr5
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr12 ⋅ expr12 CARET_PIPE expr11
+    expr12 ⋅ expr11
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr11 ⋅ expr11 AMP expr7
+    expr11 ⋅ expr7
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    expr3 ⋅ TILDE exprn
+    Transitions: expr1->81, expr13->7, expr6->8, exprn->9, expr12->10, expr5->11, ID->12, factor->13, lvalue->31, expr11->14, expr4->15, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, LPAREN->32, expr7->23, expr3->24, TILDE->25
+State 30:
+    expr lvalue EQUALS expr1 ⋅
+    Transitions: 
+State 31:
+    exprn lvalue ⋅
+    Transitions: 
+State 32:
+    factor LPAREN ⋅ expr RPAREN
+    expr ⋅ lvalue EQUALS expr1
+    expr ⋅ lvalue COLON_EQUALS expr1
+    expr ⋅ lvalue L_ARROW expr1
+    expr ⋅ expr1
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr1 ⋅ expr13
+    expr1 ⋅ expr6
+    expr1 ⋅ exprn
+    expr13 ⋅ expr13 PIPE expr12
+    expr13 ⋅ expr12
+    expr6 ⋅ expr6 PLUS expr5
+    expr6 ⋅ expr6 MINUS expr5
+    expr6 ⋅ expr5
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr12 ⋅ expr12 CARET_PIPE expr11
+    expr12 ⋅ expr11
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    expr11 ⋅ expr11 AMP expr7
+    expr11 ⋅ expr7
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    expr3 ⋅ TILDE exprn
+    Transitions: expr->66, lvalue->4, expr1->5, LPAREN->6, expr13->7, expr6->8, exprn->9, expr12->10, expr5->11, ID->12, factor->13, expr11->14, expr4->15, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, expr7->23, expr3->24, TILDE->25
+State 33:
+    expr13 expr13 PIPE ⋅ expr12
+    expr12 ⋅ expr12 CARET_PIPE expr11
+    expr12 ⋅ expr11
+    expr11 ⋅ expr11 AMP expr7
+    expr11 ⋅ expr7
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    Transitions: expr12->34, expr11->14, expr7->23
+State 34:
+    expr13 expr13 PIPE expr12 ⋅
+    expr12 expr12 ⋅ CARET_PIPE expr11
+    Transitions: CARET_PIPE->35
+State 35:
+    expr12 expr12 CARET_PIPE ⋅ expr11
+    expr11 ⋅ expr11 AMP expr7
+    expr11 ⋅ expr7
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    Transitions: expr11->36, expr7->23
+State 36:
+    expr12 expr12 CARET_PIPE expr11 ⋅
+    expr11 expr11 ⋅ AMP expr7
+    Transitions: AMP->37
+State 37:
+    expr11 expr11 AMP ⋅ expr7
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    Transitions: expr7->38
+State 38:
+    expr11 expr11 AMP expr7 ⋅
+    expr7 expr7 ⋅ LT_LT expr6
+    expr7 expr7 ⋅ GT_GT expr6
+    Transitions: LT_LT->39, GT_GT->40
+State 39:
+    expr7 expr7 LT_LT ⋅ expr6
+    expr6 ⋅ expr6 PLUS expr5
+    expr6 ⋅ expr6 MINUS expr5
+    expr6 ⋅ expr5
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr3 ⋅ TILDE exprn
+    Transitions: expr6->41, expr5->11, exprn->42, expr4->15, ID->12, factor->13, lvalue->31, expr3->24, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, LPAREN->32, TILDE->25
+State 40:
+    expr7 expr7 GT_GT ⋅ expr6
+    expr6 ⋅ expr6 PLUS expr5
+    expr6 ⋅ expr6 MINUS expr5
+    expr6 ⋅ expr5
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr3 ⋅ TILDE exprn
+    Transitions: expr6->80, expr5->11, exprn->42, expr4->15, ID->12, factor->13, lvalue->31, expr3->24, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, LPAREN->32, TILDE->25
+State 41:
+    expr7 expr7 LT_LT expr6 ⋅
+    expr6 expr6 ⋅ PLUS expr5
+    expr6 expr6 ⋅ MINUS expr5
+    Transitions: PLUS->43, MINUS->44
+State 42:
+    expr5 exprn ⋅ exprn
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    Transitions: exprn->76, ID->12, factor->13, lvalue->31, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, LPAREN->32
+State 43:
+    expr6 expr6 PLUS ⋅ expr5
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr3 ⋅ TILDE exprn
+    Transitions: expr5->45, exprn->42, expr4->15, ID->12, factor->13, lvalue->31, expr3->24, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, LPAREN->32, TILDE->25
+State 44:
+    expr6 expr6 MINUS ⋅ expr5
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr3 ⋅ TILDE exprn
+    Transitions: expr5->69, exprn->42, expr4->15, ID->12, factor->13, lvalue->31, expr3->24, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, LPAREN->32, TILDE->25
+State 45:
+    expr6 expr6 PLUS expr5 ⋅
+    expr5 expr5 ⋅ STAR expr4
+    expr5 expr5 ⋅ SLASH expr4
+    expr5 expr5 ⋅ SLASH_SLASH expr4
+    expr5 expr5 ⋅ PCT expr4
+    expr5 expr5 ⋅ C expr4
+    expr5 expr5 ⋅ P expr4
+    Transitions: STAR->46, SLASH->47, SLASH_SLASH->48, PCT->49, C->50, P->51
+State 46:
+    expr5 expr5 STAR ⋅ expr4
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr3 ⋅ TILDE exprn
+    Transitions: expr4->52, expr3->24, TILDE->25
+State 47:
+    expr5 expr5 SLASH ⋅ expr4
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr3 ⋅ TILDE exprn
+    Transitions: expr4->70, expr3->24, TILDE->25
+State 48:
+    expr5 expr5 SLASH_SLASH ⋅ expr4
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr3 ⋅ TILDE exprn
+    Transitions: expr4->72, expr3->24, TILDE->25
+State 49:
+    expr5 expr5 PCT ⋅ expr4
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr3 ⋅ TILDE exprn
+    Transitions: expr4->73, expr3->24, TILDE->25
+State 50:
+    expr5 expr5 C ⋅ expr4
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr3 ⋅ TILDE exprn
+    Transitions: expr4->74, expr3->24, TILDE->25
+State 51:
+    expr5 expr5 P ⋅ expr4
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr3 ⋅ TILDE exprn
+    Transitions: expr4->75, expr3->24, TILDE->25
+State 52:
+    expr5 expr5 STAR expr4 ⋅
+    expr4 expr4 ⋅ CARET expr3
+    expr4 expr4 ⋅ STAR_STAR expr3
+    expr4 expr4 ⋅ EXCL
+    Transitions: CARET->53, STAR_STAR->54, EXCL->55
+State 53:
+    expr4 expr4 CARET ⋅ expr3
+    expr3 ⋅ TILDE exprn
+    Transitions: expr3->56, TILDE->25
+State 54:
+    expr4 expr4 STAR_STAR ⋅ expr3
+    expr3 ⋅ TILDE exprn
+    Transitions: expr3->71, TILDE->25
+State 55:
+    expr4 expr4 EXCL ⋅
+    Transitions: 
+State 56:
+    expr4 expr4 CARET expr3 ⋅
+    Transitions: 
+State 57:
+    expr3 TILDE exprn ⋅
+    Transitions: 
+State 58:
+    exprn ID exprn ⋅
+    Transitions: 
+State 59:
+    exprn ID LPAREN ⋅ arglist RPAREN
+    arglist ⋅
+    arglist ⋅ expr
+    arglist ⋅ expr COMMA arglist
+    expr ⋅ lvalue EQUALS expr1
+    expr ⋅ lvalue COLON_EQUALS expr1
+    expr ⋅ lvalue L_ARROW expr1
+    expr ⋅ expr1
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr1 ⋅ expr13
+    expr1 ⋅ expr6
+    expr1 ⋅ exprn
+    expr13 ⋅ expr13 PIPE expr12
+    expr13 ⋅ expr12
+    expr6 ⋅ expr6 PLUS expr5
+    expr6 ⋅ expr6 MINUS expr5
+    expr6 ⋅ expr5
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr12 ⋅ expr12 CARET_PIPE expr11
+    expr12 ⋅ expr11
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    expr11 ⋅ expr11 AMP expr7
+    expr11 ⋅ expr7
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    expr3 ⋅ TILDE exprn
+    Transitions: arglist->60, expr->61, lvalue->4, expr1->5, LPAREN->6, expr13->7, expr6->8, exprn->9, expr12->10, expr5->11, ID->12, factor->13, expr11->14, expr4->15, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, expr7->23, expr3->24, TILDE->25
+State 60:
+    exprn ID LPAREN arglist ⋅ RPAREN
+    Transitions: RPAREN->62
+State 61:
+    arglist expr ⋅
+    arglist expr ⋅ COMMA arglist
+    Transitions: COMMA->63
+State 62:
+    exprn ID LPAREN arglist RPAREN ⋅
+    Transitions: 
+State 63:
+    arglist expr COMMA ⋅ arglist
+    arglist ⋅
+    arglist ⋅ expr
+    arglist ⋅ expr COMMA arglist
+    expr ⋅ lvalue EQUALS expr1
+    expr ⋅ lvalue COLON_EQUALS expr1
+    expr ⋅ lvalue L_ARROW expr1
+    expr ⋅ expr1
+    lvalue ⋅ LPAREN lvalue RPAREN
+    expr1 ⋅ expr13
+    expr1 ⋅ expr6
+    expr1 ⋅ exprn
+    expr13 ⋅ expr13 PIPE expr12
+    expr13 ⋅ expr12
+    expr6 ⋅ expr6 PLUS expr5
+    expr6 ⋅ expr6 MINUS expr5
+    expr6 ⋅ expr5
+    exprn ⋅ ID exprn
+    exprn ⋅ ID LPAREN arglist RPAREN
+    exprn ⋅ factor
+    exprn ⋅ lvalue
+    expr12 ⋅ expr12 CARET_PIPE expr11
+    expr12 ⋅ expr11
+    expr5 ⋅ expr5 STAR expr4
+    expr5 ⋅ expr5 SLASH expr4
+    expr5 ⋅ expr5 SLASH_SLASH expr4
+    expr5 ⋅ expr5 PCT expr4
+    expr5 ⋅ expr5 C expr4
+    expr5 ⋅ expr5 P expr4
+    expr5 ⋅ exprn exprn
+    expr5 ⋅ expr4
+    factor ⋅ NUM
+    factor ⋅ X
+    factor ⋅ Y
+    factor ⋅ NONE_
+    factor ⋅ TRUE_
+    factor ⋅ FALSE_
+    factor ⋅ PIPE expr PIPE
+    factor ⋅ LPAREN expr RPAREN
+    expr11 ⋅ expr11 AMP expr7
+    expr11 ⋅ expr7
+    expr4 ⋅ expr4 CARET expr3
+    expr4 ⋅ expr4 STAR_STAR expr3
+    expr4 ⋅ expr4 EXCL
+    expr4 ⋅ expr3
+    expr7 ⋅ expr7 LT_LT expr6
+    expr7 ⋅ expr7 GT_GT expr6
+    expr3 ⋅ TILDE exprn
+    Transitions: arglist->64, expr->61, lvalue->4, expr1->5, LPAREN->6, expr13->7, expr6->8, exprn->9, expr12->10, expr5->11, ID->12, factor->13, expr11->14, expr4->15, NUM->16, X->17, Y->18, NONE_->19, TRUE_->20, FALSE_->21, PIPE->22, expr7->23, expr3->24, TILDE->25
+State 64:
+    arglist expr COMMA arglist ⋅
+    Transitions: 
+State 65:
+    lvalue LPAREN lvalue ⋅ RPAREN
+    expr lvalue ⋅ COLON_EQUALS expr1
+    expr lvalue ⋅ L_ARROW expr1
+    Transitions: RPAREN->67, COLON_EQUALS->28, L_ARROW->29
+State 66:
+    factor LPAREN expr ⋅ RPAREN
+    Transitions: RPAREN->79
+State 67:
+    lvalue LPAREN lvalue RPAREN ⋅
+    Transitions: 
+State 68:
+    expr lvalue COLON_EQUALS expr1 ⋅
+    Transitions: 
+State 69:
+    expr6 expr6 MINUS expr5 ⋅
+    expr5 expr5 ⋅ STAR expr4
+    expr5 expr5 ⋅ SLASH expr4
+    expr5 expr5 ⋅ SLASH_SLASH expr4
+    expr5 expr5 ⋅ PCT expr4
+    expr5 expr5 ⋅ C expr4
+    expr5 expr5 ⋅ P expr4
+    Transitions: STAR->46, SLASH->47, SLASH_SLASH->48, PCT->49, C->50, P->51
+State 70:
+    expr5 expr5 SLASH expr4 ⋅
+    expr4 expr4 ⋅ CARET expr3
+    expr4 expr4 ⋅ STAR_STAR expr3
+    expr4 expr4 ⋅ EXCL
+    Transitions: CARET->53, STAR_STAR->54, EXCL->55
+State 71:
+    expr4 expr4 STAR_STAR expr3 ⋅
+    Transitions: 
+State 72:
+    expr5 expr5 SLASH_SLASH expr4 ⋅
+    expr4 expr4 ⋅ CARET expr3
+    expr4 expr4 ⋅ STAR_STAR expr3
+    expr4 expr4 ⋅ EXCL
+    Transitions: CARET->53, STAR_STAR->54, EXCL->55
+State 73:
+    expr5 expr5 PCT expr4 ⋅
+    expr4 expr4 ⋅ CARET expr3
+    expr4 expr4 ⋅ STAR_STAR expr3
+    expr4 expr4 ⋅ EXCL
+    Transitions: CARET->53, STAR_STAR->54, EXCL->55
+State 74:
+    expr5 expr5 C expr4 ⋅
+    expr4 expr4 ⋅ CARET expr3
+    expr4 expr4 ⋅ STAR_STAR expr3
+    expr4 expr4 ⋅ EXCL
+    Transitions: CARET->53, STAR_STAR->54, EXCL->55
+State 75:
+    expr5 expr5 P expr4 ⋅
+    expr4 expr4 ⋅ CARET expr3
+    expr4 expr4 ⋅ STAR_STAR expr3
+    expr4 expr4 ⋅ EXCL
+    Transitions: CARET->53, STAR_STAR->54, EXCL->55
+State 76:
+    expr5 exprn exprn ⋅
+    Transitions: 
+State 77:
+    factor PIPE expr ⋅ PIPE
+    Transitions: PIPE->78
+State 78:
+    factor PIPE expr PIPE ⋅
+    Transitions: 
+State 79:
+    factor LPAREN expr RPAREN ⋅
+    Transitions: 
+State 80:
+    expr7 expr7 GT_GT expr6 ⋅
+    expr6 expr6 ⋅ PLUS expr5
+    expr6 expr6 ⋅ MINUS expr5
+    Transitions: PLUS->43, MINUS->44
+State 81:
+    expr lvalue L_ARROW expr1 ⋅
+    Transitions: 

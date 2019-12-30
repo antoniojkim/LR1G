@@ -1,4 +1,5 @@
 
+import sys
 import numpy as np
 import yaml
 try:
@@ -20,10 +21,10 @@ def parseLR1(infile, outfile, verbose=False):
     for keyword in specs["keywords"]:
         terminals.extend([key for key in keyword])
 
-    if "BOF" not in terminals:
-        terminals.append("BOF")
-    if "EOF" not in terminals:
-        terminals.append("EOF")
+    if "BOF_" not in terminals:
+        terminals.append("BOF_")
+    if "EOF_" not in terminals:
+        terminals.append("EOF_")
 
     start_symbol = specs["startSymbol"]
 
@@ -144,10 +145,6 @@ def parseLR1(infile, outfile, verbose=False):
             for j in range(1, len(rule)):
                 if rule[j] in nonterminals:
                     firstS = first_star(rule, j+1)
-                    if rule[j] == "idfactor":
-                        print(f"    {rule[0]} follow: ", get_follow(rule[0]))
-                        print(f"    {rule[j]} follow: ", get_follow(rule[j]))
-                        print("    firstS: ", firstS)
                     changed = changed or union(get_follow(rule[j]), firstS)
                     if all(is_nullable(rule[k]) for k in range(j+1, len(rule))):
                         changed = changed or union(get_follow(rule[j]), get_follow(rule[0]))
@@ -187,6 +184,7 @@ def parseLR1(infile, outfile, verbose=False):
 
         def __init__(self, *items):
             self.items = list(items)
+            self.item_hashes = set(map(hash, self.items))
             self.transitions = {}
             self.num = State.num
             self.visited = False
@@ -199,16 +197,20 @@ def parseLR1(infile, outfile, verbose=False):
                     state.reset_visited()
 
         def add_item(self, item):
-            self.items.append(item)
+            if hash(item) not in self.item_hashes:
+                self.items.append(item)
+                self.item_hashes.add(hash(item))
 
         def generate_items(self):
             for item in self.items:
+                # if self.num == 12:
+                #     print(str(item), file=sys.stderr)
                 if item.bookmark < len(item.get_rule()):
                     next_item = item.get_next()
                     if next_item in nonterminals:
                         for rule in productions[next_item]:
-                            if not any(rule == i.rule for i in self.items):
-                                self.items.append(Item(rule))
+                            # if not any(rule == i.rule for i in self.items):
+                            self.add_item(Item(rule))
 
                         # if item.bookmark+1 < len(item.get_rule()) and is_nullable(next_item):
                         #     next_item = item.get_next(1)
@@ -216,7 +218,7 @@ def parseLR1(infile, outfile, verbose=False):
                         #         for rule in productions[next_item]:
                         #             if not any(rule == i.rule for i in self.items):
                         #                 self.items.append(Item(rule))
-
+                
 
         def generate_states(self):
             if not self.visited:
@@ -264,15 +266,10 @@ def parseLR1(infile, outfile, verbose=False):
 
             return transitions
 
-        def print(self):
-            if not self.visited:
-                self.visited = True
-                print(f"State {self.num}:\n    ", end="")
-                print("\n    ".join(list(map(str, self.items))))
-                print("    Transitions: "+", ".join(f"{t}->{s.num}" for t, s in self.transitions.items()))
-
-                for transition, state in sorted(self.transitions.items(), key=lambda a: a[1].num):
-                    state.print()
+        def print(self, recursive=True):
+            print(f"State {self.num}:\n    ", end="")
+            print("\n    ".join(list(map(str, self.items))))
+            print("    Transitions: "+", ".join(f"{t}->{s.num}" for t, s in self.transitions.items()))
 
 
     state = State(Item(start_state))
@@ -280,15 +277,13 @@ def parseLR1(infile, outfile, verbose=False):
     state.generate_states()
 
     if verbose:
-        state.reset_visited()
-        state.print()
+        for s in sorted(State.state_map.values(), key=lambda s: s.num):
+            s.print(recursive=False)
 
 
     state.reset_visited()
     transitions = state.get_transitions()
     transitions.sort(key=lambda x: x[0])
-    # print("\n".join(" ".join(map(str, t)) for t in transitions))
-    # exit(1)
 
 
     terminals.sort()

@@ -1,5 +1,6 @@
 
 import os
+import textwrap
 import yaml
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
@@ -55,24 +56,35 @@ def generateParserFromLR1_CPlusPlus(lr1_file, verbose=False):
     with open(os.path.join(relpath, "transitions.cc")) as file:
         template = os.linesep.join(row.rstrip() for row in file)
 
-    template = template.replace("{terminals}", ",\n\t".join('"%s"' % t for t in terminals))
-    template = template.replace("{nonterminals}", ",\n\t".join('"%s"' % t for t in nonterminals))
+    def wrap(text, width=80, indent="    "):
+        return (os.linesep + indent).join(textwrap.fill(text, width).split(os.linesep))
+
+    # template = template.replace("{terminal_enums}", wrap(", ".join(terminals)))
+    template = template.replace("{terminals}", wrap(", ".join('"%s"' % t for t in terminals)))
+
+    # template = template.replace("{nonterminal_enums}", wrap(", ".join(nonterminals)))
+    template = template.replace("{nonterminals}", wrap(", ".join('"%s"' % t for t in nonterminals)))
+    
+    # template = template.replace("{rule_enums}", wrap(", ".join(sorted("_".join(rule) for rule in rules))))
     template = template.replace("{rules}", ",\n\t".join(
         map(lambda rule: "{%s}" % ", ".join('"%s"' % r for r in rule), rules)
     ))
+
+    states = set(state for state, values in transitions.items())
+
     template = template.replace("{transitions}", ",\n\t".join(
-        "{{{state}, {{{values}}}}}".format( 
+        "/* State {state} */ {{{values}}}".format( 
             state=state,
             values=", ".join(
                 "{{\"{symbol}\", {{{reduce}, {next_state}}}}}".format(
                     symbol=symbol,
-                    reduce=str(reduce).lower(),
+                    reduce=int(reduce),
                     next_state=next_state
                 )
-                for symbol, (reduce, next_state) in values.items()
+                for symbol, (reduce, next_state) in transitions.get(state, {}).items()
             )
         )
-        for state, values in transitions.items()
+        for state in range(max(states) + 1)
     ))
     
     with open(os.path.join("Parser", "transitions.cc"), "w") as file:
