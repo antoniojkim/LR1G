@@ -1,5 +1,7 @@
 
 import os
+from collections import Counter
+
 import yaml
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
@@ -68,22 +70,15 @@ def generateCG_CPlusPlus(infile, verbose=False):
                 for row in file:
                     if row.startswith("ostream& generate_"):
                         fname = row.strip().split(" ")[1].split("(")[0]
-                        paren_count = 0
-                        brace_count = 0
+                        paren_counter = Counter(["(", ")", "{", "}"])
                         implementation = ""
                         while True:
                             for c in list(row):
-                                if (brace_count > 0):
+                                if (paren_counter["{"] > paren_counter["}"]):
                                     implementation += c
-                                if c == "{":
-                                    brace_count += 1
-                                elif c == "}":
-                                    brace_count -= 1
-                                elif c == "(":
-                                    paren_count += 1
-                                elif c == ")":
-                                    paren_count -= 1
-                            if (paren_count > 0 or brace_count > 0):
+                                if c in paren_counter:
+                                    paren_counter[c] += 1
+                            if (paren_counter["("] > paren_counter[")"] or paren_counter["{"] > paren_counter["}"]):
                                 row = next(file)
                             else:
                                 break

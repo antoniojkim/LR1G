@@ -181,7 +181,7 @@ ostream& Scanner::print(ostream& out, list<Token> tokens, const string& delimite
         }
         out << token.lexeme;
         if (printType){
-            out << "  " << getTypeString(token.type);
+            out << "  " << typeStrings[token.type];
         }
     }
     return out;
@@ -197,7 +197,7 @@ string Scanner::join(list<Token> tokens, const string& delimiter, const bool& pr
             out << delimiter;
         }
         if (printType){
-            out << "  " << getTypeString(token.type);
+            out << "  " << typeStrings[token.type];
         }
         out << token.lexeme;
     }

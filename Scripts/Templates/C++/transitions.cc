@@ -1,48 +1,35 @@
 
+#include <algorithm>
+#include <vector>
+
 #include "transitions.h"
 
-using namespace std;
+const std::array<std::string, numTerminals> terminalStrings = {
+	{terminalStrings}
+};
 
-#ifndef __TERMINALS__
-#define __TERMINALS__
+const std::array<std::string, numNonTerminals> nonterminalStrings = {
+	{nonTerminalStrings}
+};
 
-// enum Terminal {
-//     {terminal_enums}
-// };
+std::string getTerminalString(Terminal terminal){ return terminalStrings[terminal]; }
+std::string getNonTerminalString(NonTerminal nonterminal){ return nonterminalStrings[nonterminal + numNonTerminals]; }
 
-const unordered_set<string> terminals ({
-    {terminals}
-});
+int convertTokenType(Scanner::Type type){
+	const std::string typeString = Scanner::typeStrings[type];
+    auto first = terminalStrings.data();
+    auto last = first + numTerminals;
+	auto it = std::lower_bound(first, last, typeString);
+	if (it != last && !(typeString < *it)){
+		return it - first;
+	}
+	throw "Cannot find " + typeString + " in Terminals";
+}
 
-#endif // __TERMINALS__
-
-
-#ifndef __NONTERMINALS__
-#define __NONTERMINALS__
-
-// enum NonTerminal {
-//     {nonterminal_enums}
-// };
-
-const unordered_set<string> nonterminals ({
-    {nonterminals}
-});
-
-#endif // __NONTERMINALS__
-
-#ifndef __RULES__
-#define __RULES__
-
-// enum Rules {
-//     {rule_enums}
-// };
-
-const vector<list<string>> rules ({
+const std::array<std::array<int, maxRuleLength>, numRules> rules = {{
 	{rules}
-});
+}};
 
-#endif // __RULES__
-
-const vector<unordered_map<string, pair<bool, int>>> transitions ({
+const std::vector<std::map<int, int>> transitions = {
 	{transitions}
-});
+};

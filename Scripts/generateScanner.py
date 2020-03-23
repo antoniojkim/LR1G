@@ -31,7 +31,10 @@ def generateScannerCPlusPlus(infile, verbose=False):
             [str(key) for keyword in specs["keywords"] for key in keyword] + \
             ["WHITESPACE", "NONE"]
 
-    template = template.replace("{types}", wrap(", ".join(types), indent=" "*8))
+    template = template.replace("{types}", wrap(", ".join(types), indent=" "*8)) \
+                       .replace("{numTypes}", str(len(types)))
+
+    template = template.replace("{typeStrings}", wrap(", ".join(map('"{}"'.format, types)), indent=" "*8))
 
     with open(os.path.join("Scanner", "scanner.h"), "w") as file:
         file.write(template)
@@ -62,11 +65,6 @@ def generateScannerCPlusPlus(infile, verbose=False):
             ["{{{k}, \"{v}\"}}".format(k=k, v=v.upper()) for k, v in keywordLexeme.items()]
         )
     )
-
-    template = template.replace("{type_cases}", "\n        ".join(
-        'case {t}: return "{t}";'.format(t=t)
-        for t in types
-    ))
 
     num_regex = specs.get("num_regex", "\\d*\\.?\\d+").replace("\\", "\\\\")
     if not num_regex.startswith("^"):

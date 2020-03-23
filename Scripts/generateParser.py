@@ -30,6 +30,8 @@ def generateParserFromLR1_CPlusPlus(lr1_file, verbose=False):
 
     start = next(lr1)
 
+    nonterminals = [start] + nonterminals
+
     num_rules = int(next(lr1))
     rules = [next(lr1).split() for i in range(num_rules)]
 
@@ -53,33 +55,48 @@ def generateParserFromLR1_CPlusPlus(lr1_file, verbose=False):
         transitions[state][symbol] = (action == "REDUCE", nextStateOrRule)
 
 
+    with open(os.path.join(relpath, "transitions.h")) as file:
+        template = os.linesep.join(row.rstrip() for row in file)
+
+    def wrap(text, width=80, indent="\t", delimiter=", "):
+        if not isinstance(text, str):
+            text = delimiter.join(text)
+        return (os.linesep + indent).join(textwrap.fill(text, width).split(os.linesep))
+
+    wrap_quotes = lambda iterable: map('"{}"'.format, iterable)
+
+    template = template.replace("{terminals}", wrap(terminals))
+    template = template.replace("{numTerminals}", str(len(terminals)))
+
+    template = template.replace("{nonterminals}", wrap([nonterminals[0] + " = " + str(-len(nonterminals))]+nonterminals[1:]))
+    template = template.replace("{numNonTerminals}", str(len(nonterminals)))
+    
+    maxRuleLength = max(map(len, rules))
+    template = template.replace("{numRules}", str(len(rules)))
+    template = template.replace("{maxRuleLength}", str(maxRuleLength))
+    template = template.replace("{numTransitions}", str(len(transitions)))
+    
+    with open(os.path.join("Parser", "transitions.h"), "w") as file:
+        file.write(template)
+
     with open(os.path.join(relpath, "transitions.cc")) as file:
         template = os.linesep.join(row.rstrip() for row in file)
 
-    def wrap(text, width=80, indent="    "):
-        return (os.linesep + indent).join(textwrap.fill(text, width).split(os.linesep))
-
-    # template = template.replace("{terminal_enums}", wrap(", ".join(terminals)))
-    template = template.replace("{terminals}", wrap(", ".join('"%s"' % t for t in terminals)))
-
-    # template = template.replace("{nonterminal_enums}", wrap(", ".join(nonterminals)))
-    template = template.replace("{nonterminals}", wrap(", ".join('"%s"' % t for t in nonterminals)))
-    
-    # template = template.replace("{rule_enums}", wrap(", ".join(sorted("_".join(rule) for rule in rules))))
+    template = template.replace("{terminalStrings}", wrap(wrap_quotes(terminals)))
+    template = template.replace("{nonTerminalStrings}", wrap(wrap_quotes(nonterminals)))
     template = template.replace("{rules}", ",\n\t".join(
-        map(lambda rule: "{%s}" % ", ".join('"%s"' % r for r in rule), rules)
+        map(lambda rule: "{%s}" % ", ".join([str(len(rule))]+rule+["-1"]*(maxRuleLength-len(rule))), rules)
     ))
 
     states = set(state for state, values in transitions.items())
 
     template = template.replace("{transitions}", ",\n\t".join(
-        "/* State {state} */ {{{values}}}".format( 
+        "/* State {state} */ {{{{{values}}}}}".format( 
             state=state,
             values=", ".join(
-                "{{\"{symbol}\", {{{reduce}, {next_state}}}}}".format(
+                "{{{symbol}, {next_state}}}".format(
                     symbol=symbol,
-                    reduce=int(reduce),
-                    next_state=next_state
+                    next_state=next_state if reduce else -next_state-1
                 )
                 for symbol, (reduce, next_state) in transitions.get(state, {}).items()
             )

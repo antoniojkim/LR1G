@@ -106,7 +106,7 @@ std::unique_ptr<ParseTree> Parser::parse(list<Token>& tokens) {
     stateStack.emplace_back(0);
 
     for (auto& token : tokens) {
-        string typeString = getTypeString(token.type);
+        string typeString = typeStrings[token.type];
         while (transitions[stateStack.back()].count(typeString) > 0 &&
                transitions[stateStack.back()][typeString].first == true) {
             int rule = transitions[stateStack.back()][typeString].second;

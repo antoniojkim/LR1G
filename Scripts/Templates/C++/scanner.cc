@@ -49,14 +49,6 @@ bool Scanner::scan(const std::string& str, std::list<Token>& tokens) {
 }
 
 
-std::string Scanner::getTypeString(const Type& type) {
-    switch(type){
-        {type_cases}
-        default: return "NONE";
-    }
-}
-
-
 ostream& Scanner::print(ostream& out, list<Token> tokens, const string& delimiter, const bool& printType) {
     bool first = true;
     for (auto& token : tokens) {
@@ -67,7 +59,7 @@ ostream& Scanner::print(ostream& out, list<Token> tokens, const string& delimite
         }
         out << token.lexeme;
         if (printType){
-            out << "  " << getTypeString(token.type);
+            out << "  " << typeStrings[token.type];
         }
     }
     return out;
@@ -83,7 +75,7 @@ string Scanner::join(list<Token> tokens, const string& delimiter, const bool& pr
             out << delimiter;
         }
         if (printType){
-            out << "  " << getTypeString(token.type);
+            out << "  " << typeStrings[token.type];
         }
         out << token.lexeme;
     }

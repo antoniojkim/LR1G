@@ -31,14 +31,14 @@ def LR1G(args):
             if not os.path.isdir("Parser"):
                 os.mkdir("Parser")
 
-            if args.parser_transitions:
-                generateParserFromLR1_CPlusPlus(lr1_file)
-
             for file in ("transitions.h" if args.parser_transitions else "parser.h",
                          "parser.cc", "parsetree.h", "parsetree.cc", "StringUtils.h"):
-                if not os.path.isfile(os.path.join("Parser", file)):
-                    shutil.copyfile(os.path.join(relpath, "Scripts", "Templates", "C++", file), 
-                                    os.path.join("Parser", file))
+                # if not os.path.isfile(os.path.join("Parser", file)):
+                shutil.copyfile(os.path.join(relpath, "Scripts", "Templates", "C++", file), 
+                                os.path.join("Parser", file))
+
+            if args.parser_transitions:
+                generateParserFromLR1_CPlusPlus(lr1_file)
 
     if args.context_sensitive_trees:
         relpath = os.path.dirname(os.path.abspath(__file__))

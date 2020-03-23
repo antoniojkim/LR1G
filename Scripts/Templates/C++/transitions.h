@@ -1,19 +1,34 @@
 #ifndef __TRANSITIONS_H__
 #define __TRANSITIONS_H__
 
+#include <array>
 #include <list>
+#include <map>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <utility>
-#include <vector>
 
-extern const std::unordered_set<std::string> terminals;
+#include "../Scanner/scanner.h"
 
-extern const std::unordered_set<std::string> nonterminals;
+enum Terminal: int {
+    {terminals}
+};
+constexpr int numTerminals = {numTerminals};
 
-extern const std::vector<std::list<std::string>> rules;
+enum NonTerminal: int {
+    {nonterminals}
+};
+constexpr int numNonTerminals = {numNonTerminals};
 
-extern const std::vector<std::unordered_map<std::string, std::pair<bool, int>>> transitions;
+std::string getTerminalString(Terminal terminal);
+std::string getNonTerminalString(NonTerminal nonterminal);
+
+int convertTokenType(Scanner::Type type);
+
+constexpr int numRules = {numRules};
+constexpr int maxRuleLength = {maxRuleLength}+1;
+extern const std::array<std::array<int, maxRuleLength>, numRules> rules;
+
+constexpr int numTransitions = {numTransitions};
+extern const std::vector<std::map<int, int>> transitions;
 
 #endif // __TRANSITIONS_H__

@@ -360,7 +360,7 @@ ostream& print(ostream& out, list<Token> tokens, const string& delimiter, const 
         }
         out << token.lexeme;
         if (printType){
-            out << "  " << getTypeString(token.type);
+            out << "  " << typeStrings[token.type];
         }
     }
     return out;

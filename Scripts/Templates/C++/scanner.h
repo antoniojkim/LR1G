@@ -12,7 +12,9 @@ namespace Scanner {
         {types}
     };
 
-    std::string getTypeString(const Type& type);
+    const std::string typeStrings[{numTypes}] = {
+        {typeStrings}
+    };
 
     struct Token {
         std::string lexeme;

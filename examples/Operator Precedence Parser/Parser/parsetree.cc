@@ -11,7 +11,7 @@ Terminal* ParseTree::getTerminal() { throw "Trying to get terminal from nontermi
 NonTerminal* ParseTree::getNonTerminal() { throw "Trying to get nonterminal from terminal"; }
 bool ParseTree::isEmpty() { throw "Trying to see if terminal is empty"; }
 
-Terminal::Terminal(const Token& token) : token{token}, typeString{getTypeString(token.type)} {}
+Terminal::Terminal(const Token& token) : token{token}, typeString{typeStrings[token.type]} {}
 bool Terminal::isTerminal() { return true; }
 Terminal* Terminal::getTerminal() { return this; }
 std::string& Terminal::getRoot() { return typeString; }
@@ -20,7 +20,7 @@ std::string& Terminal::getFirst() { return typeString; }
 Token& Terminal::getToken() { return token; }
 
 std::ostream& Terminal::print(std::ostream& out, const std::string& indent) {
-    out << indent << getTypeString(token.type) << " " << token.lexeme << endl;
+    out << indent << typeStrings[token.type] << " " << token.lexeme << endl;
     return out;
 }
 
